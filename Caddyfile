@@ -1,0 +1,6 @@
+{$LISTEN_HOST}:{$LISTEN_PORT} {
+	basic_auth {$MATCHER} {$HASH_ALGO} {$REALM} {
+		{$BASIC_USER} {$BASIC_PW}
+	}
+	reverse_proxy {$SERVICE_HOST}:{$SERVICE_PORT}
+}
