@@ -1,0 +1,24 @@
+---
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: caddy-reverse-proxy-build
+spec:
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/UtrechtUniversity/caddy-reverse-proxy.git'
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilepath: Dockerfile
+      from:
+        kind: ImageStreamTag
+        name: 'approved-caddy:latest'
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'caddy-reverse-proxy:latest'
+  triggers:
+    - type: ConfigChange
+    - type: ImageChange
