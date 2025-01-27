@@ -8,5 +8,5 @@ ENV MATCHER=""
 ENV HASH_ALGO=bcrypt
 ENV REALM=""
 RUN setcap -r /usr/bin/caddy
-RUN apk add curl
+RUN apk add --update --no-cache curl && rm -rf /var/cache/apk/*
 COPY Caddyfile /etc/caddy/Caddyfile
