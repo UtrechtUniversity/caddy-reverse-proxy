@@ -1,0 +1,41 @@
+---
+name: Build Docker image and push to ghcr.io
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    env:
+      IMG_NAME: ghcr.io/utrechtuniversity/caddy-reverse-proxy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Test and build new docker image
+        id: test-build-image
+        run: docker build -t ${{ env.IMG_NAME }}:latest .
+      - name: Tag the image with all semantic versions
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+           VERSION=${GITHUB_REF#refs/tags/}
+           VERSION=${VERSION:1}
+           MAJOR=${VERSION%%.*}
+           MINOR=${VERSION%.*}
+           echo "Full version: $VERSION" # debug
+           echo "Major version: $MAJOR" # debug
+           echo "Minor version: $MINOR" # debug
+           docker tag ${{ env.IMG_NAME }} "${{ env.IMG_NAME }}:$VERSION"
+           docker tag ${{ env.IMG_NAME }} "${{ env.IMG_NAME }}:$MAJOR"
+           docker tag ${{ env.IMG_NAME }} "${{ env.IMG_NAME }}:$MINOR"
+           docker image list # debug
+      - name: Push image
+        run: docker push --all-tags ${{ env.IMG_NAME }}
