@@ -21,6 +21,14 @@ HASH_ALGO=bcrypt # what kind of hash the provided password uses
 REALM="" # name of the HTTP basic auth realm
 ```
 
+Additionally, you can define extra combinations of usersnames/passwords using these combinations:
+
+```bash
+BASIC_USER1
+BASIC_PW1
+# for all users up to BASIC_USER4/BASIC_PW4.
+```
+
 ## Repo outline
 
 This repo contains:
@@ -52,7 +60,9 @@ When the build finishes, you should see `caddy-reverse-proxy` when listing all I
 
 The configuration options are interpolated into a very simply [Caddyfile](Caddyfile), so currently:
 
-* There is no support for setting multiple basic auth username/password combinations
+* There is no support for setting crededentials for more than the hard-coded 5 users (`BASIC_USER`..`BASIC_USER4`).
 * Fine-tuning proxy settings is not supported (Caddy basic settings are used)
 
-This is good enough for simple protection of e.g. an API service that doesn't require multiple users to be able to authenticate.
+This is good enough for simple protection of e.g. an API service that doesn't require an arbitrary amount of users to be able to authenticate.
+
+Dynamically setting credentials for an arbitrary amount of users would require a different approach utilizing Caddy's internal API.
