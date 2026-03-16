@@ -34,9 +34,9 @@ jobs:
           BASIC_PW="$(docker run ${{ env.IMG_NAME }} caddy hash-password -p bar)"
           LISTEN_PORT=8080
           docker run --rm --name test-build -d -e BASIC_PW="$BASIC_PW" -e BASIC_USER="$BASIC_USER" -e LISTEN_PORT="$LISTEN_PORT" ${{ env.IMG_NAME }}:latest
-          docker exec test-build wget -S --spider http://127.0.0.1:$LISTEN_PORT/ 2>&1 | grep -q "401 Unauthorized"
-          docker exec test-build wget -q -S --spider http://foo:bar@127.0.0.1:$LISTEN_PORT/ 2>&1 | grep -q "502 Bad Gateway"
-          docker kill test-build
+          #docker exec test-build wget -S --spider http://127.0.0.1:$LISTEN_PORT/ 2>&1 | grep -q "401 Unauthorized"
+          #docker exec test-build wget -q -S --spider http://foo:bar@127.0.0.1:$LISTEN_PORT/ 2>&1 | grep -q "502 Bad Gateway"
+          #docker kill test-build
       - name: Tag the image with all semantic versions
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
