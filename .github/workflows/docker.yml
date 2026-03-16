@@ -29,13 +29,14 @@ jobs:
       - name: Test new docker image
         id: test-image
         run: |
+          set -euo pipefail
           BASIC_USER="foo"
           BASIC_PW="$(docker run ${{ env.IMG_NAME }} caddy hash-password -p bar)"
           LISTEN_PORT=8080
-          docker run --rm --name test-build -d ${{ env.IMG_NAME }}:latest && \
-            docker exec test-build wget -S --spider http://127.0.0.1:$LISTEN_PORT/ | grep -q "401 Unauthorized" && \
-            docker exec test-build wget -q -S --spider http://foo:bar@127.0.0.1:$LISTEN_PORT/ && \
-            docker kill test-build
+          docker run --rm --name test-build -d ${{ env.IMG_NAME }}:latest
+          docker exec test-build wget -S --spider http://127.0.0.1:$LISTEN_PORT/ | grep -q "401 Unauthorized"
+          docker exec test-build wget -q -S --spider http://foo:bar@127.0.0.1:$LISTEN_PORT/
+          docker kill test-build
       - name: Tag the image with all semantic versions
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
