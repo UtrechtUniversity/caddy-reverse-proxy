@@ -1,5 +1,5 @@
 ---
-name: Build and test Docker image
+name: Build, test, optionally deploy Docker image
 on:
   push:
     tags:
