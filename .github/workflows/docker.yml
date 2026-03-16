@@ -4,6 +4,9 @@ on:
   push:
     tags:
       - "v*.*.*"
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -48,4 +51,5 @@ jobs:
            docker tag ${{ env.IMG_NAME }} "${{ env.IMG_NAME }}:$MINOR"
            docker image list # debug
       - name: Push image
+        if: startsWith(github.ref, 'refs/tags/v')
         run: docker push --all-tags ${{ env.IMG_NAME }}
